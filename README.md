@@ -1,4 +1,4 @@
-# NFT_pricing_model
+# NFT pricing model for Pudgy Penguins NFT
 
 ## About
 NFT pricing model.
