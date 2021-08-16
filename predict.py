@@ -23,7 +23,7 @@ if __name__ == "__main__":
     preds_usd = np.stack([t.predict(pengus[features]) for t in loaded_rf.estimators_])
     pengus['preds_usd'] = np.expm1(preds_usd[-1])
     pengus['preds_eth'] = pengus['preds_usd'] / pengus['payment_token.usd_price'].median()
-    pengus = pengus[['last_sold_usd','last_sold_eth','preds_usd','preds_eth']]
+    pengus = pengus[['token_id','last_sold_usd','last_sold_eth','preds_usd','preds_eth']]
     plt.scatter(x='last_sold_usd', y='preds_usd', s=10, data=pengus)
     plt.show()
     pengus.to_csv('preds.csv')
