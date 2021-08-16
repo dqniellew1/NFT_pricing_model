@@ -1,4 +1,4 @@
-# NFT_pricing_model
+# NFT pricing model for Pudgy Penguins NFT
 
 ## About
 NFT pricing model.
@@ -20,4 +20,7 @@ python3 data.py
 python3 predict.py 
 ```
 
-5. Alternatively run notebook in colab
+5. Alternatively run notebooks in colab 
+ - Get `data.csv` from repository to load into colab notebooks
+```Penguins_data_&_model.ipynb & Penguins_analysis.ipynb```
+
