@@ -110,7 +110,7 @@ def process_data(nft_asset_list, stats):
 
     pengu_all['stats.floor_price_usd'] = pengu_all['stats.floor_price'].astype(float) * pengu_all['payment_token.usd_price'].astype(float).median()
     pengu_all['mint_multiple'] = pengu_all['last_sold_eth'].astype(float) / 0.03
-    #pengu_all['listing_multiple'] = pengu_all['listing_usd_price'].astype(float) / pengu_all['stats.floor_price_usd'].astype(float)
+    pengu_all['floor_multiple'] = pengu_all['last_sold_eth'].astype(float) / pengu_all['stats.floor_price_usd'].astype(float).median()
 
     pengu_all['last_sold_usd_log'] = pengu_all['last_sold_usd'].apply(lambda x: np.log1p(x))
     pengu_all['last_sold_eth_log'] = pengu_all['last_sold_eth'].apply(lambda x: np.log1p(x))
@@ -118,7 +118,7 @@ def process_data(nft_asset_list, stats):
     pengu_all['num_sold_day'] = pengu_all.groupby('last_sold_date')['num_sales'].transform('count')
 
     num_cols = ['num_sales', 'Background_count', 'Body_count','Face_count', 'Head_count', 
-            'Skin_count','rarity_score','number_owned', 'mint_multiple']
+            'Skin_count','rarity_score','number_owned', 'mint_multiple', 'floor_multiple']
 
     for col in num_cols:
         # do not fill numerical columns
@@ -141,4 +141,4 @@ if __name__ == "__main__":
     stats = get_stats()
     penguin_list = get_penguins()
     pengus = process_data(penguin_list, stats)
-    pengus.to_csv('data/data.py')
+    pengus.to_csv('data/data.csv')
