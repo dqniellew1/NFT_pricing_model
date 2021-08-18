@@ -2,8 +2,6 @@
 # source nft_pricing/bin/activate
 # python3 -m pip install -r requirements.txt
 
-
-
 import joblib
 import pandas as pd
 import numpy as np
@@ -36,7 +34,9 @@ def get_penguins():
 
         querystring = {"token_ids": id, "asset_contract_address":"0xbd3531da5cf5857e7cfaa92426877b022e612cf8","order_direction":"asc","offset":"0","limit":"50"}
 
-        response = requests.request("GET", url, params=querystring).json()
+        headers = {"X-API-KEY": "41d5b498b5214d489dfe018df71ad8b5"}
+
+        response = requests.request("GET", url, headers=headers , params=querystring).json()
 
         penguin_list.append(response)
     return penguin_list
@@ -62,7 +62,7 @@ def process_data(nft_asset_list, stats):
 
     df_penguins = df_penguins.merge(so, how='left', left_on= 'token_id', right_on='metadata.asset.id')
 
-    cols = ['id','token_id','num_sales','image_url', 'permalink', 'listing_usd_price', 'listing_eth_price'] #'listing_usd_price', 'listing_eth_price'
+    cols = ['id','token_id','num_sales','image_original_url', 'permalink', 'listing_usd_price', 'listing_eth_price'] #'listing_usd_price', 'listing_eth_price'
     desc = df_penguins[cols]
 
     owner = pd.json_normalize(df_penguins['owner'])['address']
@@ -89,7 +89,7 @@ def process_data(nft_asset_list, stats):
     last_sale['max_sale_usd_day'] = last_sale['max_sale_eth_day'] * last_sale['payment_token.usd_price'].median().astype(float)
 
     penguins_combine = pd.concat([desc, owner, traits, last_sale], axis=1)
-    new_name = ['id','token_id','num_sales','image_url','permalink', 'listing_usd_price', 'listing_eth_price',
+    new_name = ['id','token_id','num_sales','image_original_url','permalink', 'listing_usd_price', 'listing_eth_price',
                 'address','Background','Body','Face','Head','Skin','Background_count','Body_count',
                 'Face_count','Head_count','Skin_count','last_sold_date','last_sold_token','last_sold_usd','last_sold_eth','payment_token.usd_price',
                 'mean_sale_eth_day','max_sale_eth_day','mean_sale_usd_day','max_sale_usd_day']
@@ -110,7 +110,7 @@ def process_data(nft_asset_list, stats):
 
     pengu_all['stats.floor_price_usd'] = pengu_all['stats.floor_price'].astype(float) * pengu_all['payment_token.usd_price'].astype(float).median()
     pengu_all['mint_multiple'] = pengu_all['last_sold_eth'].astype(float) / 0.03
-    pengu_all['listing_multiple'] = pengu_all['listing_usd_price'].astype(float) / pengu_all['stats.floor_price_usd'].astype(float)
+    #pengu_all['listing_multiple'] = pengu_all['listing_usd_price'].astype(float) / pengu_all['stats.floor_price_usd'].astype(float)
 
     pengu_all['last_sold_usd_log'] = pengu_all['last_sold_usd'].apply(lambda x: np.log1p(x))
     pengu_all['last_sold_eth_log'] = pengu_all['last_sold_eth'].apply(lambda x: np.log1p(x))
@@ -132,10 +132,13 @@ def process_data(nft_asset_list, stats):
     pengu_all['listing_usd_price'].fillna(pengu_all['listing_usd_price'].median(), inplace=True)
     pengu_all['listing_multiple'] = pengu_all['listing_usd_price'].astype(float) / pengu_all['stats.floor_price_usd'].astype(float)
 
+    pengu_all.loc[:, "rarity_bins"] = pd.cut(
+        pengu_all["rarity_score"], bins=5, labels=False)
+
     return pengu_all
 
 if __name__ == "__main__":
     stats = get_stats()
     penguin_list = get_penguins()
     pengus = process_data(penguin_list, stats)
-    pengus.to_csv('data.py')
+    pengus.to_csv('data/data.py')

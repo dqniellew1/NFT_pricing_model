@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penguin price predictor</title>
+</head>
+<body>
+    <h1>Penguin price predictor</h1>
+    <p>Enter your Penguin ID</p>
+    <form action="/predict" method="POST">
+        <input type="number" name="penguinid" placeholder="Penguin ID" required="required" min="0" max="8887" style="width: 10em"/>
+        <br>
+        <button type="submit" class="btn">Predict</button>
+    </form>
+
+    <br>
+    {{ ID }}
+    <br>
+    <img src="{{ penguinimage }}" alt="Penguin image" width="325" height="325">
+    <br>
+    <br>
+    <a href="{{ opensea_link }}" target="_blank">Opensea</a>
+    <br>
+    <br>
+    {{ predictions }}
+
+</body>
+</html>
