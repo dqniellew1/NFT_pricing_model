@@ -38,11 +38,11 @@ class PredictPrice(Resource):
         #preds_usd = np.stack([t.predict(pengus[features]) for t in model.estimators_])
         pengus.loc[pengus['token_id'] == nft_id, 'preds_usd'] = np.round(np.expm1(preds_usd[-1]), 2)
         pengus.loc[pengus['token_id'] == nft_id, 'preds_eth'] = pengus['preds_usd'] / pengus['payment_token.usd_price'].median()
-        pengus.loc[pengus['token_id'] == nft_id, 'preds_eth'] = pengus['preds_eth'] * 1.2
+        pengus.loc[pengus['token_id'] == nft_id, 'preds_eth'] = pengus['preds_eth'] * 2.5
 
         prediction = pengus.loc[pengus['token_id'] == nft_id, ['token_id','image_url','permalink','last_sold_usd','last_sold_eth','preds_usd','preds_eth']]
         if prediction['last_sold_eth'].values <= pengus['stats.floor_price'].median():
-            prediction['preds_eth'] = pengus['stats.floor_price'].median() * 1.2
+            prediction['preds_eth'] = pengus['stats.floor_price'].median() * 1.5
 
         penguin_ID = prediction['token_id'].values[0]
         penguin_img = prediction['image_url'].values[0]
